@@ -35,5 +35,5 @@ cat /etc/profile
 # 刷新资源,使其生效
 source /etc/profile
 
-# 查看版本
+# 查看版本 (TODO: 在 shell 脚本里, source /etc/profile 命令总是不生效).
 ffmpeg -version

@@ -1,4 +1,4 @@
-#!/usr/sh
+#!/usr/bin/env bash
 #GPU驱动安装需要先将原有的显示关闭, 重启机器, 再进行安装.
 #参考链接:
 #https://blog.csdn.net/kingschan/article/details/19033595
@@ -119,32 +119,66 @@
 #|  No running processes found                                                 |
 #+-----------------------------------------------------------------------------+
 #
+#
 
-
+# params
 stage=1
+nvidia_driver_filename=https://cn.download.nvidia.com/tesla/440.118.02/NVIDIA-Linux-x86_64-440.118.02.run
+
+# parse options
+while true; do
+  [ -z "${1:-}" ] && break;  # break if there are no arguments
+  case "$1" in
+    --*) name=$(echo "$1" | sed s/^--// | sed s/-/_/g);
+      eval '[ -z "${'"$name"'+xxx}" ]' && echo "$0: invalid option $1" 1>&2 && exit 1;
+      old_value="(eval echo \\$$name)";
+      if [ "${old_value}" == "true" ] || [ "${old_value}" == "false" ]; then
+        was_bool=true;
+      else
+        was_bool=false;
+      fi
+
+      # Set the variable to the right value-- the escaped quotes make it work if
+      # the option had spaces, like --cmd "queue.pl -sync y"
+      eval "${name}=\"$2\"";
+
+      # Check that Boolean-valued arguments are really Boolean.
+      if $was_bool && [[ "$2" != "true" && "$2" != "false" ]]; then
+        echo "$0: expected \"true\" or \"false\": $1 $2" 1>&2
+        exit 1;
+      fi
+      shift 2;
+      ;;
+
+    *) break;
+  esac
+done
+
 echo "stage: ${stage}";
 
-if [ ${stage} -eq 0 ]; then
-  mkdir -p /data/tianxing
-  cd /data/tianxing || echo 1;
-  wget https://cn.download.nvidia.com/tesla/440.118.02/NVIDIA-Linux-x86_64-440.118.02.run
+yum -y install wget
+yum -y install sudo
 
+if [ ${stage} -eq 0 ]; then
+  mkdir -p /data/dep
+  cd /data/dep || echo 1;
+  wget -P /data/dep ${nvidia_driver_filename}
 
   echo -e "blacklist nouveau\noptions nouveau modeset=0\n" > /etc/modprobe.d/blacklist-nouveau.conf
   sudo dracut --force
   # 重启
   reboot
 elif [ ${stage} -eq 1 ]; then
-  cd /data/tianxing || echo 1;
-
   init 3
 
   yum install -y kernel-devel kernel-headers
   yum info kernel-devel kernel-headers
-
   yum install -y "kernel-devel-uname-r == $(uname -r)"
   yum -y distro-sync
 
+  cd /data/dep || echo 1;
+
+  # 安装时, 需要回车三下.
   sh NVIDIA-Linux-x86_64-440.118.02.run
   nvidia-smi
 fi

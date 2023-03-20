@@ -13,7 +13,7 @@ cd /data/dep || exit 0;
 yum -y update
 yum -y install curl
 
-# curl https://sh.rustup.rs -sSf | sh
+# echo | curl https://sh.rustup.rs -sSf | sh
 curl https://sh.rustup.rs -sSf > temp_rustup.sh
 bash temp_rustup.sh -y
 rm -rf temp_rustup.sh

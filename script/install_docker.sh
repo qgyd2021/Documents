@@ -13,7 +13,7 @@ if [ ${system_version} = "centos" ]; then
   mkdir -p /data/lib/docker
 
   # echo -e "{\n\"graph\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
-  echo -e "{\n\"root-path\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
+  echo -e "{\n\"data-root\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
 
   systemctl start docker
 elif [ ${system_version} = "ubuntu" ]; then
@@ -23,7 +23,7 @@ elif [ ${system_version} = "ubuntu" ]; then
   mkdir -p /data/lib/docker
 
   # echo -e "{\n\"graph\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
-  echo -e "{\n\"root-path\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
+  echo -e "{\n\"data-root\": \"/data/lib/docker\"\n}\n" > /etc/docker/daemon.json
 
   systemctl start docker
 fi
