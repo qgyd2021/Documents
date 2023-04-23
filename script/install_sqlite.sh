@@ -1,19 +1,6 @@
-#!/usr/bin/expect
-# 参考链接:
-# https://gitee.com/help/articles/4181#article-header0
-#
-# 交互时输入回车, 参考链接:
-# https://www.shuzhiduo.com/A/kvJ3rYQDzg/
-# https://www.shuzhiduo.com/A/8Bz8KD1Ndx/
-# https://blog.51cto.com/u_15366123/4660499
+#!/usr/bin/env bash
 
-
-# params
-verbose=true;
-stage=0
-stop_stage=0
-comment=qgyd2021@gmail.com;
-
+system_version="windows";
 
 # parse options
 while true; do
@@ -44,12 +31,13 @@ while true; do
   esac
 done
 
+echo "system_version: ${system_version}";
 
-if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
-  $verbose && echo "ssh-keygen";
-  # echo -e '\n\n\n' | ssh-keygen -t rsa -C "qgyd2021@gmail.com" -N ""
-  echo | ssh-keygen -t rsa -C "${comment}" -N ""
 
-  cat ~/.ssh/id_rsa
-  cat ~/.ssh/id_rsa.pub
+if [ ${system_version} = "windows" ]; then
+
+  wget -P C:/Program20%Files https://www.sqlite.org/2023/sqlite-tools-win32-x86-3410200.zip
+  cd C:/Program20%Files || exit 1;
+  unzip -d . sqlite-tools-win32-x86-3410200.zip
+  rm -rf sqlite-tools-win32-x86-3410200.zip
 fi

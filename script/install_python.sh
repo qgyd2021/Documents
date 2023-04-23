@@ -46,7 +46,7 @@ if [ ${system_version} = "centos" ]; then
   yum install -y wget
   yum install -y make
 
-  mkdir /data/dep
+  mkdir -p /data/dep
   wget -P /data/dep https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz
 
   cd /data/dep || exit 1;

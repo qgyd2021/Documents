@@ -5,6 +5,7 @@
 
 # 参数:
 system_version="centos";
+gcc_version=11.1.0;
 
 # parse options
 while true; do
@@ -42,13 +43,22 @@ if [ ${system_version} = "centos" ]; then
   yum install -y bzip2 git wget which lrzsz tmux zip unzip
 
   mkdir -p /data/dep
-  # https://github.com/gcc-mirror/gcc/tags
-  wget -P /data/dep https://github.com/gcc-mirror/gcc/archive/refs/tags/releases/gcc-11.1.0.zip
+  cd -P /data/dep || exit 1;
+  if [ ! -e gcc-${gcc_version}.zip ]; then
+    # https://github.com/gcc-mirror/gcc/tags
+    wget -P /data/dep -c https://github.com/gcc-mirror/gcc/archive/refs/tags/releases/gcc-${gcc_version}.zip
+  fi
 
   cd -P /data/dep || exit 1;
-  unzip gcc-11.1.0.zip
+  if [ ! -d gcc-releases-gcc-${gcc_version}/ ]; then
+    unzip gcc-${gcc_version}.zip
+    cd gcc-releases-gcc-${gcc_version}/ || exit 1;
+  fi
 
-  cd gcc-releases-gcc-11.1.0/ || exit 1;
+  # gcc --version | grep 'gcc (GCC)' | awk -F ' ' '{print $NF}'
+  if [ "$(gcc --version | grep 'gcc (GCC)' | awk -F ' ' '{print $NF}')" == "${gcc_version}" ]; then
+    echo "gcc ${gcc_version} already exist" || exit 0;
+  fi
 
   ./contrib/download_prerequisites
 

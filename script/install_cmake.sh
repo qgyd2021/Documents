@@ -6,6 +6,7 @@
 
 
 # 参数:
+cmake_version=3.25.0
 system_version="centos";
 
 
@@ -44,13 +45,25 @@ if [ ${system_version} = "centos" ]; then
   yum install -y wget
 
   mkdir -p /data/dep
-  #wget -P /data/dep https://cmake.org/files/v3.21/cmake-3.21.1-linux-x86_64.tar.gz
-  wget -P /data/dep https://cmake.org/files/v3.25/cmake-3.25.0-linux-x86_64.tar.gz
+  cd /data/dep || exit 1;
+  if [ ! -e cmake-${cmake_version}-linux-x86_64.tar.gz ]; then
+    # echo 3.25.0 | awk -F '.' '{print $1 "." $2}'
+    cmake_version_folder="$(echo ${cmake_version} | awk -F '.' '{print $1 "." $2}')";
+    # https://cmake.org/files/v3.25
+    # https://cmake.org/files/v3.25/cmake-3.25.0-linux-x86_64.tar.gz
+    url="https://cmake.org/files/v${cmake_version_folder}/cmake-${cmake_version}-linux-x86_64.tar.gz"
+    wget -P /data/dep -c "${url}"
+  fi
 
   cd /data/dep || exit 1;
-  tar -zxvf cmake-3.25.0-linux-x86_64.tar.gz
+  if [ ! -d cmake-${cmake_version}-linux-x86_64 ]; then
+    tar -zxvf cmake-${cmake_version}-linux-x86_64.tar.gz
+    cd cmake-${cmake_version}-linux-x86_64 || exit 1;
+  fi
 
-  cd cmake-3.25.0-linux-x86_64 || exit 1;
+  if [ "$(cmake --version | grep "cmake version" | awk -F ' ' '{print $NF}')" != "${cmake_version}" ]; then
+    echo "cmake ${cmake_version} already exist" || exit 0;
+  fi
 
   # usr/bin/cmake
   /data/dep/cmake-3.25.0-linux-x86_64/bin/cmake --version

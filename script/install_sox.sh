@@ -1,19 +1,9 @@
-#!/usr/bin/expect
-# 参考链接:
-# https://gitee.com/help/articles/4181#article-header0
+#!/usr/bin/env bash
 #
-# 交互时输入回车, 参考链接:
-# https://www.shuzhiduo.com/A/kvJ3rYQDzg/
-# https://www.shuzhiduo.com/A/8Bz8KD1Ndx/
-# https://blog.51cto.com/u_15366123/4660499
+# https://sourceforge.net/projects/sox/files/sox/
 
-
-# params
-verbose=true;
-stage=0
-stop_stage=0
-comment=qgyd2021@gmail.com;
-
+# 参数:
+system_version="windows";
 
 # parse options
 while true; do
@@ -44,12 +34,14 @@ while true; do
   esac
 done
 
+echo "system_version: ${system_version}";
 
-if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
-  $verbose && echo "ssh-keygen";
-  # echo -e '\n\n\n' | ssh-keygen -t rsa -C "qgyd2021@gmail.com" -N ""
-  echo | ssh-keygen -t rsa -C "${comment}" -N ""
+if [ ${system_version} = "windows" ]; then
+  echo "system_version: ${system_version}";
+  wget -P C:/Program20%Files https://altushost-swe.dl.sourceforge.net/project/sox/sox/14.4.1/sox-14.4.1a-win32.zip
+  cd C:/Program20%Files || exit 1;
+  unzip -d sox-14.4.1a-win32 sox-14.4.1a-win32.zip
+  rm sox-14.4.1a-win32.zip
 
-  cat ~/.ssh/id_rsa
-  cat ~/.ssh/id_rsa.pub
 fi
+
