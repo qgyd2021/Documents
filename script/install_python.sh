@@ -2,7 +2,7 @@
 
 # 参数:
 python_version="3.6.5";
-system_version="ubuntu";
+system_version="centos";
 
 
 # parse options
@@ -47,11 +47,16 @@ if [ ${system_version} = "centos" ]; then
   yum install -y make
 
   mkdir -p /data/dep
-  wget -P /data/dep https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz
+  cd /data/dep || exit 1;
+  if [ ! -e Python-${python_version}.tgz ]; then
+    wget -P /data/dep https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz
+  fi
 
   cd /data/dep || exit 1;
-  tar -zxvf Python-${python_version}.tgz
-  cd /data/dep/Python-${python_version} || exit 1;
+  if [ ! -d Python-${python_version} ]; then
+    tar -zxvf Python-${python_version}.tgz
+    cd /data/dep/Python-${python_version} || exit 1;
+  fi
 
   mkdir /usr/local/python-${python_version}
   ./configure --prefix=/usr/local/python-${python_version}
@@ -86,16 +91,21 @@ elif [ ${system_version} = "ubuntu" ]; then
   # 安装依赖
   sudo apt install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libbz2-dev liblzma-dev sqlite3 libsqlite3-dev tk-dev uuid-dev libgdbm-compat-dev
 
-  mkdir /data/dep
-
-  # sudo wget -P /data/dep https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
-  sudo wget -P /data/dep https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz
+  mkdir -p /data/dep
+  cd /data/dep || exit 1;
+  if [ ! -e Python-${python_version}.tgz ]; then
+    # sudo wget -P /data/dep https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
+    sudo wget -P /data/dep https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz
+  fi
 
   cd /data/dep || exit 1;
-  # tar -zxvf Python-3.6.5.tgz
-  tar -zxvf Python-${python_version}.tgz
-  # cd /data/dep/Python-3.6.5
-  cd /data/dep/Python-${python_version} || exit 1;
+  if [ ! -d Python-${python_version} ]; then
+    # tar -zxvf Python-3.6.5.tgz
+    tar -zxvf Python-${python_version}.tgz
+    # cd /data/dep/Python-3.6.5
+    cd /data/dep/Python-${python_version} || exit 1;
+  fi
+
   # mkdir /usr/local/python-3.6.5
   mkdir /usr/local/python-${python_version}
 

@@ -119,11 +119,31 @@
 #|  No running processes found                                                 |
 #+-----------------------------------------------------------------------------+
 #
+## 查看 GPU 温度; nvidia-smi -q -i 0,1 -d TEMPERATURE
+#==============NVSMI LOG==============
 #
+#Timestamp                           : Fri May 19 14:23:03 2023
+#Driver Version                      : 440.118.02
+#CUDA Version                        : 10.2
+#
+#Attached GPUs                       : 1
+#GPU 00000000:0B:00.0
+#    Temperature
+#        GPU Current Temp            : 69 C
+#        GPU Shutdown Temp           : 90 C
+#        GPU Slowdown Temp           : 87 C
+#        GPU Max Operating Temp      : 83 C
+#        Memory Current Temp         : 66 C
+#        Memory Max Operating Temp   : 85 C
 
 # params
 stage=1
+
+# Tesla T4; cuda 10.2
 nvidia_driver_filename=https://cn.download.nvidia.com/tesla/440.118.02/NVIDIA-Linux-x86_64-440.118.02.run
+
+# Tesla T4; cuda 11.7
+#nvidia_driver_filename=https://cn.download.nvidia.com/tesla/515.105.01/NVIDIA-Linux-x86_64-515.105.01.run
 
 # parse options
 while true; do
@@ -171,6 +191,8 @@ if [ ${stage} -eq 0 ]; then
 elif [ ${stage} -eq 1 ]; then
   init 3
 
+  yum -y install gcc gcc-c++
+  yum install -y make
   yum install -y kernel-devel kernel-headers
   yum info kernel-devel kernel-headers
   yum install -y "kernel-devel-uname-r == $(uname -r)"
@@ -179,6 +201,18 @@ elif [ ${stage} -eq 1 ]; then
   cd /data/dep || echo 1;
 
   # 安装时, 需要回车三下.
-  sh NVIDIA-Linux-x86_64-440.118.02.run
+  # https://www.imooc.com/article/325871
+  # sh NVIDIA-Linux-x86_64-440.118.02.run
+  sh ${nvidia_driver_filename##*/}
   nvidia-smi
+elif [ ${stage} -eq 1 ]; then
+  # remove
+  # http://www.taodudu.cc/news/show-6093940.html?action=onClick
+
+  # sh NVIDIA-Linux-x86_64-440.118.02.run --uninstall
+  sh ${nvidia_driver_filename##*/} --uninstall
+
+  # 重启
+  reboot
+
 fi
