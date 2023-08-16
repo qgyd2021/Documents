@@ -13,13 +13,16 @@
 #
 #
 #NVIDIA 驱动程序下载
-#先在 pytorch 上查看应该用什么 cuda 版本, 再安装对应的 cuda-toolkit cuda.
-#再根据 gpu 版本下载安装对应的 nvidia 驱动
+#(1)先在 pytorch 上查看应该用什么 cuda 版本
+#(2)再根据 gpu 版本和所需的 cuda 版本, 下载安装对应的 nvidia 驱动
+#(3)安装对应版本的 cuda.
 #
 ## pytorch 版本
 #https://pytorch.org/get-started/locally/
 #
-## CUDA 下载 (好像不需要这个)
+## CUDA 下载
+#(1)好像不需要这个, CUDA 安装可能包含在了 driver 安装过程中.
+#(2)也有看到是在安装 Nvidia 驱动后再安装 CUDA 的.
 #https://developer.nvidia.com/cuda-toolkit-archive
 #
 ## nvidia 驱动
@@ -135,6 +138,10 @@
 #        GPU Max Operating Temp      : 83 C
 #        Memory Current Temp         : 66 C
 #        Memory Max Operating Temp   : 85 C
+#
+#查看 GPU 详细信息:
+#nvidia-smi -q
+#
 
 # params
 stage=1

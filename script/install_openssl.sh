@@ -1,13 +1,4 @@
 #!/usr/bin/env bash
-#参考链接
-#https://golang.google.cn/
-#https://blog.csdn.net/weixin_43529465/article/details/122784828
-#下载页面
-#https://golang.google.cn/dl/
-#
-#将go命令添加到PATH
-#参考链接: https://blog.csdn.net/weixin_42738495/article/details/124405846
-
 
 # params:
 system_version="centos";
@@ -42,30 +33,30 @@ while true; do
   esac
 done
 
-
 echo "system_version: ${system_version}";
 
 
-if [ ${system_version} = "centos" ] && [ "$(uname -m)" == x86_64 ]; then
-  yum install -y wget
 
+if [ ${system_version} = "centos" ]; then
   mkdir -p /data/dep
   cd /data/dep || exit 1;
-  if [ ! -e go1.18.10.linux-amd64.tar.gz ]; then
-    wget -P /data/dep https://golang.google.cn/dl/go1.18.10.linux-amd64.tar.gz
+
+  if [ ! -e openssl-1.1.1n.tar.gz ]; then
+    wget https://www.openssl.org/source/openssl-1.1.1n.tar.gz --no-check-certificate
   fi
 
   cd /data/dep || exit 1;
-  if [ ! -d go ]; then
-    tar -zxvf go1.18.10.linux-amd64.tar.gz
+  if [ ! -d openssl-1.1.1n ]; then
+    tar -zxvf openssl-1.1.1n.tar.gz
+
+    cd /data/dep/openssl-1.1.1n || exit 1;
   fi
 
-  /data/dep/go/bin/go version;
+  mkdir -p /usr/local/openssl
 
-  cat ~/.bashrc
-  echo "PATH=$PATH:/data/dep/go/bin" >> /root/.bashrc
-  source ~/.bashrc
+  ./config --prefix=/usr/local/openssl
+  #./Configure --prefix=/usr/local/openssl
 
-  go version;
+  make -j && make install
 
 fi

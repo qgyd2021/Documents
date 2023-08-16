@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-#参考链接
-#https://golang.google.cn/
-#https://blog.csdn.net/weixin_43529465/article/details/122784828
-#下载页面
-#https://golang.google.cn/dl/
-#
-#将go命令添加到PATH
-#参考链接: https://blog.csdn.net/weixin_42738495/article/details/124405846
+
+# https://www.5axxw.com/questions/simple/umiecs
 
 
 # params:
@@ -46,26 +40,20 @@ done
 echo "system_version: ${system_version}";
 
 
-if [ ${system_version} = "centos" ] && [ "$(uname -m)" == x86_64 ]; then
-  yum install -y wget
+if [ ${system_version} = "centos" ]; then
+  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
-  mkdir -p /data/dep
-  cd /data/dep || exit 1;
-  if [ ! -e go1.18.10.linux-amd64.tar.gz ]; then
-    wget -P /data/dep https://golang.google.cn/dl/go1.18.10.linux-amd64.tar.gz
-  fi
+  bash Miniconda3-latest-Linux-x86_64.sh
 
-  cd /data/dep || exit 1;
-  if [ ! -d go ]; then
-    tar -zxvf go1.18.10.linux-amd64.tar.gz
-  fi
-
-  /data/dep/go/bin/go version;
+  /usr/local/miniconda3/bin/conda --version
 
   cat ~/.bashrc
-  echo "PATH=$PATH:/data/dep/go/bin" >> /root/.bashrc
+  echo "PATH=$PATH:/usr/local/miniconda3/bin" >> /root/.bashrc
   source ~/.bashrc
 
-  go version;
+  conda --version
 
 fi
+
+
+
